@@ -1,15 +1,13 @@
-const { startTokenCleanupTask } = require('./cleanupTokens');
-const logger = require('../shared/utils/logger');
+import { startTokenCleanupTask } from "./cleanupTokens";
+import logger from "../shared/utils/logger";
 
 /**
  * Register & start all background tasks
- * Called once from server.js after app starts
+ * Called once from server.ts after app starts
  */
-const startAllTasks = () => {
-  if (process.env.NODE_ENV === 'test') return; // skip in test env
+export const startAllTasks = () => {
+  if (process.env.NODE_ENV === "test") return; // skip in test env
 
   startTokenCleanupTask();
-  logger.info('✅ All background tasks started');
+  logger.info("✅ All background tasks started");
 };
-
-module.exports = { startAllTasks };

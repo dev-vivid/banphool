@@ -3,73 +3,113 @@
  */
 
 // ── Roles ─────────────────────────────────────────────────────────────────────
-const ROLES = Object.freeze({
-  ADMIN: 'ADMIN',
-  USER:  'USER',
-});
+export const ROLES = Object.freeze({
+  ADMIN: "ADMIN",
+  USER: "USER",
+} as const);
 
 // ── Audit Actions ─────────────────────────────────────────────────────────────
-const AUDIT_ACTIONS = Object.freeze({
-  REGISTER:     'REGISTER',
-  LOGIN:        'LOGIN',
-  LOGOUT:       'LOGOUT',
-  FAILED_LOGIN: 'FAILED_LOGIN',
-  CREATE:       'CREATE',
-  UPDATE:       'UPDATE',
-  DELETE:       'DELETE',
-});
+export const AUDIT_ACTIONS = Object.freeze({
+  REGISTER: "REGISTER",
+  LOGIN: "LOGIN",
+  LOGOUT: "LOGOUT",
+  FAILED_LOGIN: "FAILED_LOGIN",
+  CREATE: "CREATE",
+  UPDATE: "UPDATE",
+  DELETE: "DELETE",
+} as const);
 
 // ── Audit Status ──────────────────────────────────────────────────────────────
-const AUDIT_STATUS = Object.freeze({
-  SUCCESS: 'SUCCESS',
-  FAILURE: 'FAILURE',
-});
+export const AUDIT_STATUS = Object.freeze({
+  SUCCESS: "SUCCESS",
+  FAILURE: "FAILURE",
+} as const);
 
 // ── Pagination ────────────────────────────────────────────────────────────────
-const PAGINATION = Object.freeze({
-  DEFAULT_PAGE:  1,
+export const PAGINATION = Object.freeze({
+  DEFAULT_PAGE: 1,
   DEFAULT_LIMIT: 10,
-  MAX_LIMIT:     100,
-});
+  MAX_LIMIT: 100,
+} as const);
 
 // ── Sort Whitelist ────────────────────────────────────────────────────────────
-const PRODUCT_SORT_FIELDS = Object.freeze(['name', 'price', 'stock', 'category', 'createdAt']);
+export const PRODUCT_SORT_FIELDS = Object.freeze([
+  "name",
+  "price",
+  "stock",
+  "category",
+  "createdAt",
+] as const);
+
+export const VOLUNTEER_SORT_FIELDS = Object.freeze([
+  "firstName",
+  "lastName",
+  "email",
+  "phoneNumber",
+  "interestArea",
+  "createdAt",
+  "updatedAt",
+] as const);
+
+export const CONTACT_US_SORT_FIELDS = Object.freeze([
+  "name",
+  "email",
+  "phone",
+  "address",
+  "remarks",
+  "createdAt",
+  "updatedAt",
+] as const);
+
+export const BENEFICIARY_APPLICATION_SORT_FIELDS = Object.freeze([
+  "fullName",
+  "fullAddress",
+  "emailAddress",
+  "phoneNumber",
+  "aadharNumber",
+  "typeOfAssistance",
+  "createdAt",
+  "updatedAt",
+] as const);
 
 // ── HTTP Status Codes ─────────────────────────────────────────────────────────
-const HTTP = Object.freeze({
-  OK:           200,
-  CREATED:      201,
-  BAD_REQUEST:  400,
+export const HTTP = Object.freeze({
+  OK: 200,
+  CREATED: 201,
+  BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
-  FORBIDDEN:    403,
-  NOT_FOUND:    404,
-  CONFLICT:     409,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  CONFLICT: 409,
   SERVER_ERROR: 500,
-});
+} as const);
 
 // ── Messages ──────────────────────────────────────────────────────────────────
-const MESSAGES = Object.freeze({
-  LOGIN_SUCCESS:    'Login successful',
-  LOGOUT_SUCCESS:   'Logged out successfully',
-  REGISTER_SUCCESS: 'Registration successful',
-  CREATED:          'Created successfully',
-  UPDATED:          'Updated successfully',
-  DELETED:          'Deleted successfully',
-  NOT_FOUND:        'Resource not found',
-  UNAUTHORIZED:     'Unauthorized',
-  FORBIDDEN:        'You do not have permission for this action',
-  INVALID_TOKEN:    'Invalid token',
-  TOKEN_EXPIRED:    'Token expired',
-  VALIDATION_FAIL:  'Validation failed',
-  SERVER_ERROR:     'Internal server error',
-});
+export const MESSAGES = Object.freeze({
+  LOGIN_SUCCESS: "Login successful",
+  LOGOUT_SUCCESS: "Logged out successfully",
+  REGISTER_SUCCESS: "Registration successful",
+  CREATED: "Created successfully",
+  UPDATED: "Updated successfully",
+  DELETED: "Deleted successfully",
+  NOT_FOUND: "Resource not found",
+  UNAUTHORIZED: "Unauthorized",
+  FORBIDDEN: "You do not have permission for this action",
+  INVALID_TOKEN: "Invalid token",
+  TOKEN_EXPIRED: "Token expired",
+  VALIDATION_FAIL: "Validation failed",
+  SERVER_ERROR: "Internal server error",
+} as const);
 
-module.exports = {
+export default {
   ROLES,
   AUDIT_ACTIONS,
   AUDIT_STATUS,
   PAGINATION,
   PRODUCT_SORT_FIELDS,
+  VOLUNTEER_SORT_FIELDS,
+  CONTACT_US_SORT_FIELDS,
+  BENEFICIARY_APPLICATION_SORT_FIELDS,
   HTTP,
   MESSAGES,
 };

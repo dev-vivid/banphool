@@ -1,20 +1,20 @@
-const rateLimit = require('express-rate-limit');
-const env = require('../config/env');
+import rateLimit from "express-rate-limit";
+import env from "../config/env";
 
-const globalLimiter = rateLimit({
-  windowMs:        env.rateLimit.windowMs,
-  max:             env.rateLimit.max,
+export const globalLimiter = rateLimit({
+  windowMs: env.rateLimit.windowMs,
+  max: env.rateLimit.max,
   standardHeaders: true,
-  legacyHeaders:   false,
-  message: { success: false, message: 'Too many requests – please try again later.' },
+  legacyHeaders: false,
+  message: { success: false, message: "Too many requests – please try again later." },
 });
 
-const authLimiter = rateLimit({
+export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,
   standardHeaders: true,
-  legacyHeaders:   false,
-  message: { success: false, message: 'Too many auth attempts – try again in 15 minutes.' },
+  legacyHeaders: false,
+  message: { success: false, message: "Too many auth attempts – try again in 15 minutes." },
 });
 
-module.exports = { globalLimiter, authLimiter };
+export default { globalLimiter, authLimiter };

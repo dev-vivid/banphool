@@ -1,22 +1,28 @@
-const router   = require('express').Router();
-const ctrl     = require('../controller/authController');
-const { registerValidation, loginValidation, refreshValidation } = require('../validation/authValidation');
-const { authenticate } = require('../../../middleware/authMiddleware');
-const validate = require('../../../middleware/validate');
+import { Router } from "express";
+import ctrl from "../controller/authController";
+import {
+  registerValidation,
+  loginValidation,
+  refreshValidation,
+} from "../validation/authValidation";
+import { authenticate } from "../../../middleware/authMiddleware";
+import validate from "../../../middleware/validate";
+
+const router = Router();
 
 // POST /api/auth/register
-router.post('/register', registerValidation, validate, ctrl.register);
+router.post("/register", registerValidation, validate, ctrl.register);
 
 // POST /api/auth/login
-router.post('/login', loginValidation, validate, ctrl.login);
+router.post("/login", loginValidation, validate, ctrl.login);
 
 // POST /api/auth/refresh
-router.post('/refresh', refreshValidation, validate, ctrl.refresh);
+router.post("/refresh", refreshValidation, validate, ctrl.refresh);
 
 // POST /api/auth/logout  [protected]
-router.post('/logout', authenticate, ctrl.logout);
+router.post("/logout", authenticate as any, ctrl.logout as any);
 
 // GET  /api/auth/me      [protected]
-router.get('/me', authenticate, ctrl.me);
+router.get("/me", authenticate as any, ctrl.me as any);
 
-module.exports = router;
+export default router;

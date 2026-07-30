@@ -24,10 +24,10 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  products      Product[]      @relation("ProductCreatedBy")
-  updatedProducts Product[]    @relation("ProductUpdatedBy")
-  refreshTokens RefreshToken[]
-  auditLogs     AuditLog[]
+  products        Product[]      @relation("ProductCreatedBy")
+  updatedProducts Product[]      @relation("ProductUpdatedBy")
+  refreshTokens   RefreshToken[]
+  auditLogs       AuditLog[]
 
   @@map("users")
 }
@@ -56,18 +56,18 @@ model Product {
 
 // ── AuditLogs ─────────────────────────────────────────────────────────────────
 model AuditLog {
-  id          String       @id @default(uuid())
-  userId      String?      @map("user_id")
-  userEmail   String?      @map("user_email") @db.VarChar(150)
-  action      String       @db.VarChar(50)
-  resource    String       @db.VarChar(100)
-  resourceId  String?      @map("resource_id")
-  oldValues   Json?        @map("old_values")
-  newValues   Json?        @map("new_values")
-  ipAddress   String       @map("ip_address") @db.VarChar(45)
-  userAgent   String?      @map("user_agent") @db.Text
-  status      AuditStatus  @default(SUCCESS)
-  createdAt   DateTime     @default(now()) @map("created_at")
+  id         String      @id @default(uuid())
+  userId     String?     @map("user_id")
+  userEmail  String?     @map("user_email") @db.VarChar(150)
+  action     String      @db.VarChar(50)
+  resource   String      @db.VarChar(100)
+  resourceId String?     @map("resource_id")
+  oldValues  Json?       @map("old_values")
+  newValues  Json?       @map("new_values")
+  ipAddress  String      @map("ip_address") @db.VarChar(45)
+  userAgent  String?     @map("user_agent") @db.Text
+  status     AuditStatus @default(SUCCESS)
+  createdAt  DateTime    @default(now()) @map("created_at")
 
   user User? @relation(fields: [userId], references: [id])
 
@@ -103,4 +103,67 @@ enum Role {
 enum AuditStatus {
   SUCCESS
   FAILURE
+}
+
+model Volunteer {
+  id           String   @id @default(uuid())
+  firstName    String   @map("first_name") @db.VarChar(100)
+  lastName     String   @map("last_name") @db.VarChar(100)
+  email        String   @unique @db.VarChar(150)
+  phoneNumber  String   @map("phone_number") @db.VarChar(20)
+  interestArea String   @map("interest_area") @db.VarChar(200)
+  remarks      String?  @db.Text
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([email])
+  @@index([phoneNumber])
+  @@index([interestArea])
+  @@map("volunteers")
+}
+
+model BeneficiaryApplication {
+  id String @id @default(uuid())
+
+  fullName          String  @map("full_name")
+  fullAddress       String  @map("full_address") @db.Text
+  emailAddress      String  @unique @map("email_address")
+  phoneNumber       String  @map("phone_number")
+  aadharNumber      String  @unique @map("aadhar_number")
+  aadharImageUpload String  @map("aadhar_image_upload")
+  typeOfAssistance  String  @map("type_of_assistance")
+  description       String  @db.Text
+  supportDocument   String? @map("support_document")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([emailAddress])
+  @@index([phoneNumber])
+  @@index([aadharNumber])
+  @@map("beneficiary_applications")
+}
+
+model ContactUs {
+  id String @id @default(uuid())
+
+  name    String @db.VarChar(100)
+  email   String @db.VarChar(150)
+  phone   String @db.VarChar(20)
+  address String @db.Text
+  remarks String @db.Text
+
+  agreeTerms Boolean @default(false)
+
+  emailSent   Boolean   @default(false)
+  emailSentAt DateTime?
+  emailStatus String?   @db.VarChar(50)
+  emailError  String?   @db.Text
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([email])
+  @@index([phone])
+  @@map("contact_us")
 }

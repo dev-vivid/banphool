@@ -1,18 +1,18 @@
-const bcrypt  = require('bcryptjs');
-const { v4: uuidv4 } = require('uuid');
-const prisma  = require('../../../config/prisma');
-const env     = require('../../../config/env');
+import bcrypt from "bcryptjs";
+import { v4 as uuidv4 } from "uuid";
+import prisma from "../../../config/prisma";
+import env from "../../../config/env";
 
-const findByEmail = (email) =>
+export const findByEmail = (email: string) =>
   prisma.user.findUnique({ where: { email } });
 
-const findById = (id) =>
+export const findById = (id: string) =>
   prisma.user.findUnique({
-    where:  { id },
+    where: { id },
     select: { id: true, name: true, email: true, role: true, createdAt: true },
   });
 
-const createUser = async ({ name, email, password, role = 'USER' }) => {
+export const createUser = async ({ name, email, password, role = "USER" }: any) => {
   const hashed = await bcrypt.hash(password, env.bcryptRounds);
   return prisma.user.create({
     data: { id: uuidv4(), name, email, password: hashed, role },
@@ -20,6 +20,7 @@ const createUser = async ({ name, email, password, role = 'USER' }) => {
   });
 };
 
-const verifyPassword = (plain, hashed) => bcrypt.compare(plain, hashed);
+export const verifyPassword = (plain: string, hashed: string) =>
+  bcrypt.compare(plain, hashed);
 
-module.exports = { findByEmail, findById, createUser, verifyPassword };
+export default { findByEmail, findById, createUser, verifyPassword };
