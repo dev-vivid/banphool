@@ -72,6 +72,27 @@ export const BENEFICIARY_APPLICATION_SORT_FIELDS = Object.freeze([
   "updatedAt",
 ] as const);
 
+
+export const PAYMENT_METHOD = {
+  QR: "QR",
+  CARD: "CARD",
+} as const;
+
+export const PAYMENT_STATUS = {
+  PENDING: "PENDING",
+  SUCCESS: "SUCCESS",
+  FAILED: "FAILED",
+  CANCELLED: "CANCELLED",
+} as const;
+
+export const PAYMENT_SORT_FIELDS = Object.freeze([
+  "transactionNo",
+  "donorName",
+  "amount",
+  "paymentStatus",
+  "createdAt",
+]);
+
 // ── HTTP Status Codes ─────────────────────────────────────────────────────────
 export const HTTP = Object.freeze({
   OK: 200,
@@ -113,3 +134,4 @@ export default {
   HTTP,
   MESSAGES,
 };
+

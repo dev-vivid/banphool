@@ -167,3 +167,35 @@ model ContactUs {
   @@index([phone])
   @@map("contact_us")
 }
+
+model Payment {
+  id String @id @default(uuid())
+
+  transactionNo String @unique
+
+  donorName  String
+  donorEmail String?
+  donorPhone String?
+
+  amount Decimal @db.Decimal(10, 2)
+
+  paymentMethod String // QR, CARD
+  paymentStatus String // PENDING, SUCCESS, FAILED
+
+  gateway          String? // Razorpay, PhonePe, Cashfree
+  gatewayOrderId   String?
+  gatewayPaymentId String?
+  gatewayResponse  Json?
+
+  remarks String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([transactionNo])
+  @@index([paymentStatus])
+  @@index([paymentMethod])
+  @@index([gatewayOrderId])
+  @@index([createdAt])
+  @@map("payments")
+}
