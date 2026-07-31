@@ -9,6 +9,8 @@ import newsRoutes from "../modules/web/routes/newsRoutes";
 import eventsRoutes from "../modules/web/routes/eventsRoutes";
 import photoRoutes from "../modules/web/routes/photosRoutes";
 import videoRoutes from "../modules/web/routes/videosRoutes"; 
+import dashboardRoutes from "../modules/web/routes/dashboardRoutes"; 
+import reportRoutes from "../modules/web/routes/reportRoutes"; 
 
 
 const router = Router();
@@ -24,5 +26,8 @@ router.use("/web/news", newsRoutes);
 router.use("/web/events", eventsRoutes);
 router.use("/web/photos", photoRoutes);
 router.use("/web/videos", videoRoutes);
+
+router.use("/web/dashboard", dashboardRoutes);
+router.use("/web/report", reportRoutes);
 
 export default router;

@@ -1,6 +1,8 @@
 import prisma from "../../../config/prisma";
 import razorpay from "../../../config/razorpay";
 
+import { sendPaymentSuccessEmails } from "../../../services/paymentEmailService";
+
 import crypto from "crypto";
 
 interface PaymentFindAllOptions {
@@ -245,7 +247,7 @@ export const handleWebhook = async (
     // Verify Razorpay Webhook Signature
     const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET!;
 
-    const receivedSignature = headers["x-razorpay-signature"];
+    const receivedSignature = headers["x-razorpay-signature"] as string;
 
     const generatedSignature = crypto
       .createHmac("sha256", webhookSecret)
@@ -260,6 +262,7 @@ export const handleWebhook = async (
 
     // Process only successful payments
     if (event !== "payment.captured") {
+      console.log(`Webhook ignored: ${event}`);
       return true;
     }
 
@@ -286,7 +289,7 @@ export const handleWebhook = async (
     }
 
     // Update payment
-    await prisma.payment.update({
+    const updatedPayment = await prisma.payment.update({
       where: {
         id: paymentRecord.id,
       },
@@ -298,8 +301,16 @@ export const handleWebhook = async (
     });
 
     console.log(
-      `Webhook: Payment ${paymentRecord.transactionNo} updated successfully`
+      `Webhook: Payment ${updatedPayment.transactionNo} updated successfully`
     );
+
+    // Send emails
+    try {
+      await sendPaymentSuccessEmails(updatedPayment);
+      console.log("Payment success emails sent successfully.");
+    } catch (emailError: any) {
+      console.error("Email Error:", emailError.message);
+    }
 
     return true;
   } catch (error: any) {
