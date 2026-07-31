@@ -72,6 +72,40 @@ export const BENEFICIARY_APPLICATION_SORT_FIELDS = Object.freeze([
   "updatedAt",
 ] as const);
 
+export const NEWS_SORT_FIELDS = Object.freeze([
+  "header",
+  "description",
+  "document",
+  "createdAt",
+  "updatedAt",
+] as const);
+
+export const EVENTS_SORT_FIELDS = Object.freeze([
+  "header",
+  "description",
+  "document",
+  "createdAt",
+  "updatedAt",
+] as const);
+
+
+export const PHOTOS_SORT_FIELDS = Object.freeze([
+  "header",
+  "description",
+  "document",
+  "createdAt",
+  "updatedAt",
+] as const);
+
+
+export const VIDEOS_SORT_FIELDS = Object.freeze([
+  "header",
+  "description",
+  "document",
+  "createdAt",
+  "updatedAt",
+] as const);
+
 
 export const PAYMENT_METHOD = {
   QR: "QR",
@@ -129,8 +163,12 @@ export default {
   PAGINATION,
   PRODUCT_SORT_FIELDS,
   VOLUNTEER_SORT_FIELDS,
+  NEWS_SORT_FIELDS,
   CONTACT_US_SORT_FIELDS,
   BENEFICIARY_APPLICATION_SORT_FIELDS,
+  EVENTS_SORT_FIELDS,
+  PHOTOS_SORT_FIELDS,
+  VIDEOS_SORT_FIELDS, 
   HTTP,
   MESSAGES,
 };
