@@ -3,11 +3,22 @@ import tokenService from "../../../services/tokenService";
 import { writeAudit } from "../../../services/auditService";
 import { getClientIp } from "../../../shared/helpers/ipHelper";
 import { AUDIT_ACTIONS, AUDIT_STATUS } from "../../../constants";
+import { AuthenticatedRequest } from "../../../middleware/authMiddleware";
 
-export const register = async (body: any, req: any) => {
+/**
+ * Register
+ */
+export const register = async (
+  body: any,
+  req: AuthenticatedRequest
+) => {
   const exists = await authService.findByEmail(body.email);
+
   if (exists) {
-    throw { statusCode: 409, message: "Email already registered" };
+    throw {
+      statusCode: 409,
+      message: "Email already registered",
+    };
   }
 
   const user = await authService.createUser(body);
@@ -17,17 +28,28 @@ export const register = async (body: any, req: any) => {
     resource: "users",
     resourceId: user.id,
     req,
-    newValues: { name: user.name, email: user.email, role: user.role },
+    newValues: {
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
   });
 
   return user;
 };
 
-export const login = async ({ email, password }: any, req: any) => {
-  const user = await authService.findByEmail(email);
-  const valid = user && (await authService.verifyPassword(password, user.password));
+/**
+ * Login
+ */
+export const login = async (
+  body: any,
+  req: AuthenticatedRequest
+) => {
+  const { email, password } = body;
 
-  if (!valid) {
+  const user = await authService.findByEmail(email);
+
+  if (!user) {
     await writeAudit({
       action: AUDIT_ACTIONS.FAILED_LOGIN,
       resource: "users",
@@ -35,38 +57,99 @@ export const login = async ({ email, password }: any, req: any) => {
       status: AUDIT_STATUS.FAILURE,
       newValues: { email },
     });
-    throw { statusCode: 401, message: "Invalid email or password" };
+
+    throw {
+      statusCode: 401,
+      message: "Invalid email or password",
+    };
+  }
+
+  const isPasswordValid = await authService.verifyPassword(
+    password,
+    user.password
+  );
+
+  if (!isPasswordValid) {
+    await writeAudit({
+      action: AUDIT_ACTIONS.FAILED_LOGIN,
+      resource: "users",
+      resourceId: user.id,
+      req,
+      status: AUDIT_STATUS.FAILURE,
+      newValues: { email },
+    });
+
+    throw {
+      statusCode: 401,
+      message: "Invalid email or password",
+    };
   }
 
   if (!user.isActive) {
-    throw { statusCode: 401, message: "Account deactivated" };
+    throw {
+      statusCode: 403,
+      message: "Your account has been deactivated",
+    };
   }
 
-  const payload = { id: user.id, email: user.email, role: user.role };
+  const payload = {
+    id: user.id,
+    email: user.email,
+    role: user.role,
+  };
+
   const accessToken = tokenService.signAccess(payload);
   const refreshToken = tokenService.signRefresh(payload);
 
-  await tokenService.saveRefreshToken(user.id, refreshToken, getClientIp(req));
-  await writeAudit({ action: AUDIT_ACTIONS.LOGIN, resource: "users", resourceId: user.id, req });
+  await tokenService.saveRefreshToken(
+    user.id,
+    refreshToken,
+    getClientIp(req)
+  );
+
+  await writeAudit({
+    action: AUDIT_ACTIONS.LOGIN,
+    resource: "users",
+    resourceId: user.id,
+    req,
+  });
 
   return {
-    user: { id: user.id, name: user.name, email: user.email, role: user.role },
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
     accessToken,
     refreshToken,
   };
 };
 
-export const refresh = async ({ refreshToken }: any) => {
+/**
+ * Refresh Token
+ */
+export const refresh = async (body: any) => {
+  const { refreshToken } = body;
+
   let decoded: any;
+
   try {
     decoded = tokenService.verifyRefresh(refreshToken);
   } catch {
-    throw { statusCode: 401, message: "Invalid or expired refresh token" };
+    throw {
+      statusCode: 401,
+      message: "Invalid or expired refresh token",
+    };
   }
 
-  const stored = await tokenService.findValidRefreshToken(decoded.id);
-  if (!stored) {
-    throw { statusCode: 401, message: "Refresh token revoked or expired" };
+  const token = await tokenService.findValidRefreshToken(decoded.id);
+
+  if (!token) {
+    throw {
+      statusCode: 401,
+      message: "Refresh token revoked or expired",
+    };
   }
 
   return {
@@ -78,17 +161,44 @@ export const refresh = async ({ refreshToken }: any) => {
   };
 };
 
-export const logout = async (req: any) => {
-  await tokenService.revokeAllTokens(req.user.id);
-  await writeAudit({ action: AUDIT_ACTIONS.LOGOUT, resource: "users", resourceId: req.user.id, req });
+/**
+ * Logout
+ */
+export const logout = async (
+  req: AuthenticatedRequest
+) => {
+  await tokenService.revokeAllTokens(req.user!.id);
+
+  await writeAudit({
+    action: AUDIT_ACTIONS.LOGOUT,
+    resource: "users",
+    resourceId: req.user!.id,
+    req,
+  });
+
+  return true;
 };
 
+/**
+ * Logged-in User
+ */
 export const getMe = async (id: string) => {
   const user = await authService.findById(id);
+
   if (!user) {
-    throw { statusCode: 404, message: "User not found" };
+    throw {
+      statusCode: 404,
+      message: "User not found",
+    };
   }
+
   return user;
 };
 
-export default { register, login, refresh, logout, getMe };
+export default {
+  register,
+  login,
+  refresh,
+  logout,
+  getMe,
+};

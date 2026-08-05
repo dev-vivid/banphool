@@ -1,28 +1,67 @@
 import { Router } from "express";
-import ctrl from "../controller/authController";
+import authController from "../controller/authController";
 import {
   registerValidation,
   loginValidation,
   refreshValidation,
 } from "../validation/authValidation";
-import { authenticate } from "../../../middleware/authMiddleware";
 import validate from "../../../middleware/validate";
+import { authenticate } from "../../../middleware/authMiddleware";
 
 const router = Router();
 
-// POST /api/auth/register
-router.post("/register", registerValidation, validate, ctrl.register);
+/**
+ * Register
+ * POST /api/auth/register
+ */
+router.post(
+  "/register",
+  registerValidation,
+  validate,
+  authController.register
+);
 
-// POST /api/auth/login
-router.post("/login", loginValidation, validate, ctrl.login);
+/**
+ * Login
+ * POST /api/auth/login
+ */
+router.post(
+  "/login",
+  loginValidation,
+  validate,
+  authController.login
+);
 
-// POST /api/auth/refresh
-router.post("/refresh", refreshValidation, validate, ctrl.refresh);
+/**
+ * Refresh Token
+ * POST /api/auth/refresh
+ */
+router.post(
+  "/refresh",
+  refreshValidation,
+  validate,
+  authController.refresh
+);
 
-// POST /api/auth/logout  [protected]
-router.post("/logout", authenticate as any, ctrl.logout as any);
+/**
+ * Logout
+ * POST /api/auth/logout
+ */
+router.post(
+  "/logout",
+  authenticate as any,
+  authController.logout
+);
 
-// GET  /api/auth/me      [protected]
-router.get("/me", authenticate as any, ctrl.me as any);
+/**
+ * Current Logged-in User
+ * GET /api/auth/me
+ */
+router.get(
+  "/me",
+  authenticate as any,
+  authController.me
+);
 
 export default router;
+export { router };

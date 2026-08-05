@@ -1,69 +1,172 @@
-import { Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { AuthenticatedRequest } from "../../../middleware/authMiddleware";
-import useCase from "../usecase/authUseCase";
+import authUseCase from "../usecase/authUseCase";
 import response from "../../../shared/utils/response";
 
-export const register = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+/**
+ * Register
+ */
+export const register = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const data = await useCase.register(req.body, req);
-    return response.created(res, req, data, "Registration successful");
-  } catch (err: any) {
-    if (err.statusCode) {
-      return response.error(res, req, err.message, err.statusCode);
+    const result = await authUseCase.register(
+      req.body,
+      req as AuthenticatedRequest
+    );
+
+    return response.created(
+      res,
+      req,
+      result,
+      "Registration successful"
+    );
+  } catch (error: any) {
+    if (error.statusCode) {
+      return response.error(
+        res,
+        req,
+        error.message,
+        error.statusCode
+      );
     }
-    next(err);
+
+    next(error);
   }
 };
 
-export const login = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+/**
+ * Login
+ */
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const data = await useCase.login(req.body, req);
-    return response.success(res, req, data, "Login successful");
-  } catch (err: any) {
-    if (err.statusCode) {
-      return response.error(res, req, err.message, err.statusCode);
+    const result = await authUseCase.login(
+      req.body,
+      req as AuthenticatedRequest
+    );
+
+    return response.success(
+      res,
+      req,
+      result,
+      "Login successful"
+    );
+  } catch (error: any) {
+    if (error.statusCode) {
+      return response.error(
+        res,
+        req,
+        error.message,
+        error.statusCode
+      );
     }
-    next(err);
+
+    next(error);
   }
 };
 
-export const refresh = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+/**
+ * Refresh Token
+ */
+export const refresh = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const data = await useCase.refresh(req.body);
-    return response.success(res, req, data, "Token refreshed");
-  } catch (err: any) {
-    if (err.statusCode) {
-      return response.error(res, req, err.message, err.statusCode);
+    const result = await authUseCase.refresh(req.body);
+
+    return response.success(
+      res,
+      req,
+      result,
+      "Token refreshed"
+    );
+  } catch (error: any) {
+    if (error.statusCode) {
+      return response.error(
+        res,
+        req,
+        error.message,
+        error.statusCode
+      );
     }
-    next(err);
+
+    next(error);
   }
 };
 
-export const logout = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+/**
+ * Logout
+ */
+export const logout = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    await useCase.logout(req);
-    return response.success(res, req, {}, "Logged out successfully");
-  } catch (err: any) {
-    if (err.statusCode) {
-      return response.error(res, req, err.message, err.statusCode);
+    await authUseCase.logout(req);
+
+    return response.success(
+      res,
+      req,
+      {},
+      "Logged out successfully"
+    );
+  } catch (error: any) {
+    if (error.statusCode) {
+      return response.error(
+        res,
+        req,
+        error.message,
+        error.statusCode
+      );
     }
-    next(err);
+
+    next(error);
   }
 };
 
-export const me = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+/**
+ * Get Logged-in User
+ */
+export const me = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const userId = req.user?.id;
-    if (!userId) {
-      return response.unauthorized(res, "Not authenticated");
+    if (!req.user?.id) {
+      return response.unauthorized(
+        res,
+        "Not authenticated"
+      );
     }
-    const data = await useCase.getMe(userId);
-    return response.success(res, req, data);
-  } catch (err: any) {
-    if (err.statusCode) {
-      return response.error(res, req, err.message, err.statusCode);
+
+    const result = await authUseCase.getMe(req.user.id);
+
+    return response.success(
+      res,
+      req,
+      result
+    );
+  } catch (error: any) {
+    if (error.statusCode) {
+      return response.error(
+        res,
+        req,
+        error.message,
+        error.statusCode
+      );
     }
-    next(err);
+
+    next(error);
   }
 };
 
