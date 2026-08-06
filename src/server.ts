@@ -35,17 +35,17 @@ app.use(helmet());
 app.disable("x-powered-by");
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
-app.use(
-  cors({
-    origin: (origin: string | undefined, cb: (err: Error | null, allow?: boolean) => void) => {
-      if (!origin || env.allowedOrigins.includes(origin)) return cb(null, true);
-      cb(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+// app.use(
+//   cors({
+//     origin: (origin: string | undefined, cb: (err: Error | null, allow?: boolean) => void) => {
+//       if (!origin || env.allowedOrigins.includes(origin)) return cb(null, true);
+//       cb(new Error("Not allowed by CORS"));
+//     },
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   })
+// );
 
 // ── Global rate limiter ───────────────────────────────────────────────────────
 app.use(globalLimiter);
