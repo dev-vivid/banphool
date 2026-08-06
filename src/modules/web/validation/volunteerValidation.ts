@@ -48,9 +48,8 @@ export const volunteerBody = [
     .withMessage("Last name must not exceed 100 characters"),
 
   body("email")
+    .optional({ nullable: true, checkFalsy: true })
     .trim()
-    .notEmpty()
-    .withMessage("Email is required")
     .isEmail()
     .withMessage("Invalid email address")
     .isLength({ max: 150 })
@@ -69,6 +68,10 @@ export const volunteerBody = [
     .withMessage("Interest area is required")
     .isLength({ max: 200 })
     .withMessage("Interest area must not exceed 200 characters"),
+
+  body("address")
+    .optional({ nullable: true })
+    .trim(),
 
   body("remarks")
     .optional({ nullable: true })

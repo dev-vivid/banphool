@@ -43,6 +43,11 @@ export const findAll = async ({
               contains: search,
             },
           },
+          {
+            address: {
+              contains: search,
+            },
+          },
         ],
       }
     : {};
@@ -82,10 +87,11 @@ export const create = async (data: any) => {
     data: {
       firstName: data.firstName,
       lastName: data.lastName,
-      email: data.email,
+      email: data.email || null,
       phoneNumber: data.phoneNumber,
       interestArea: data.interestArea,
-      remarks: data.remarks,
+      address: data.address || null,
+      remarks: data.remarks || null,
     },
   });
 };
@@ -98,10 +104,11 @@ export const update = async (id: string, data: any) => {
     data: {
       firstName: data.firstName,
       lastName: data.lastName,
-      email: data.email,
+      email: data.email || null,
       phoneNumber: data.phoneNumber,
       interestArea: data.interestArea,
-      remarks: data.remarks,
+      address: data.address || null,
+      remarks: data.remarks || null,
     },
   });
 };
