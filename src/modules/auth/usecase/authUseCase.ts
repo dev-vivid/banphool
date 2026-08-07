@@ -92,6 +92,10 @@ export const login = async (
     };
   }
 
+  // Fire-and-forget: transparently upgrade the stored hash if it was
+  // created with a slower (older) cost factor than currently configured.
+  authService.rehashPasswordIfNeeded(user.id, password, user.password);
+
   const payload = {
     id: user.id,
     email: user.email,
@@ -101,18 +105,22 @@ export const login = async (
   const accessToken = tokenService.signAccess(payload);
   const refreshToken = tokenService.signRefresh(payload);
 
-  await tokenService.saveRefreshToken(
-    user.id,
-    refreshToken,
-    getClientIp(req)
-  );
-
-  await writeAudit({
+  // Persist the refresh token and write the audit log concurrently —
+  // they're independent DB writes, no need to serialize two round-trips.
+  // writeAudit never throws (it swallows its own errors), so it's safe
+  // to fire-and-forget and not hold up the response for it.
+  writeAudit({
     action: AUDIT_ACTIONS.LOGIN,
     resource: "users",
     resourceId: user.id,
     req,
   });
+
+  await tokenService.saveRefreshToken(
+    user.id,
+    refreshToken,
+    getClientIp(req)
+  );
 
   return {
     user: {

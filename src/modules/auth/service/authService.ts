@@ -77,9 +77,33 @@ export const verifyPassword = async (
   return bcrypt.compare(plainPassword, hashedPassword);
 };
 
+/**
+ * Rehash a user's password in the background if it was hashed with an
+ * outdated (slower) cost factor than the current configured rounds.
+ * Never throws — this is a best-effort upgrade, not part of the login flow.
+ */
+export const rehashPasswordIfNeeded = async (
+  userId: string,
+  plainPassword: string,
+  hashedPassword: string
+) => {
+  try {
+    if (bcrypt.getRounds(hashedPassword) <= env.bcryptRounds) return;
+
+    const newHash = await bcrypt.hash(plainPassword, env.bcryptRounds);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: newHash },
+    });
+  } catch {
+    // best-effort — a failed rehash just means it'll be retried next login
+  }
+};
+
 export default {
   findByEmail,
   findById,
   createUser,
   verifyPassword,
+  rehashPasswordIfNeeded,
 };
