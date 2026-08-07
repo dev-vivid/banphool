@@ -48,10 +48,14 @@ export const findAll = async ({
     }),
   ]);
 
-  const baseUrl = process.env.BASE_URL || "http://localhost:3000";
+  const baseUrl =
+    process.env.BASE_URL || "http://localhost:3000";
 
   const list = rows.map((item) => ({
     ...item,
+
+    status: item.isActive ? "Active" : "Inactive",
+
     document: item.document
       ? `${baseUrl}/uploads/events/${item.document}`
       : null,
@@ -74,15 +78,20 @@ export const findById = async (id: string) => {
     return null;
   }
 
-  const baseUrl = process.env.BASE_URL || "http://localhost:3000";
+  const baseUrl =
+    process.env.BASE_URL || "http://localhost:3000";
 
   return {
     ...events,
+
+    status: events.isActive ? "Active" : "Inactive",
+
     document: events.document
       ? `${baseUrl}/uploads/events/${events.document}`
       : null,
   };
 };
+
 
 export const create = async (data: any) => {
   return prisma.events.create({
@@ -120,10 +129,25 @@ export const remove = async (id: string) => {
   });
 };
 
+export const updateStatus = async (
+  id: string,
+  isActive: boolean
+) => {
+  return prisma.volunteer.update({
+    where: {
+      id,
+    },
+    data: {
+      isActive,
+    },
+  });
+};
+
 export default {
   findAll,
   findById,
   create,
   update,
   remove,
+  updateStatus
 };

@@ -92,6 +92,8 @@ model Volunteer {
   address      String   @db.Text
   remarks      String?  @db.Text
 
+  isActive     Boolean  @default(true) @map("is_active")
+
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
@@ -111,6 +113,9 @@ model BeneficiaryApplication {
   typeOfAssistance  String   @map("type_of_assistance")
   description       String   @db.Text
   supportDocument   String?  @map("support_document")
+
+  isActive     Boolean  @default(true) @map("is_active")
+  
   createdAt         DateTime @default(now()) @map("created_at")
   updatedAt         DateTime @updatedAt @map("updated_at")
 
@@ -132,6 +137,9 @@ model ContactUs {
   emailSentAt DateTime? @map("email_sent_at")
   emailStatus String?   @map("email_status") @db.VarChar(50)
   emailError  String?   @map("email_error") @db.Text
+
+  isActive     Boolean  @default(true) @map("is_active")
+
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
@@ -154,6 +162,9 @@ model Payment {
   gatewayPaymentId String?  @map("gateway_payment_id")
   gatewayResponse  Json?    @map("gateway_response")
   remarks          String?
+
+  isActive     Boolean  @default(true) @map("is_active")
+
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
 
@@ -170,6 +181,9 @@ model News {
   header      String   @map("header") @db.VarChar(255)
   description String?  @db.LongText
   document    String?
+
+  isActive     Boolean  @default(true) @map("is_active")
+
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
@@ -181,6 +195,9 @@ model Events {
   header      String   @db.VarChar(255)
   description String?  @db.LongText
   document    String?
+
+  isActive     Boolean  @default(true) @map("is_active")
+
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
@@ -192,6 +209,9 @@ model Photos {
   header      String   @db.VarChar(255)
   description String?  @db.LongText
   document    String?
+
+  isActive     Boolean  @default(true) @map("is_active")
+
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
@@ -203,6 +223,9 @@ model Videos {
   header      String   @db.VarChar(255)
   description String?  @db.LongText
   document    String?
+
+  isActive     Boolean  @default(true) @map("is_active")
+
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 

@@ -111,10 +111,43 @@ export const remove = async (
   });
 };
 
+export const updateStatus = async (
+  id: string,
+  isActive: boolean,
+  req: any
+) => {
+  const existing = await videosService.findById(id);
+
+  if (!existing) {
+    throw {
+      statusCode: 404,
+      message: "Volunteer not found",
+    };
+  }
+
+  const updated = await videosService.updateStatus(id, isActive);
+
+  await writeAudit({
+    action: isActive
+      ? AUDIT_ACTIONS.UPDATE
+      : AUDIT_ACTIONS.UPDATE,
+    resource: "volunteers",
+    resourceId: id,
+    req,
+    oldValues: existing,
+    newValues: {
+      isActive,
+    },
+  });
+
+  return updated;
+};
+
 export default {
   getAll,
   getById,
   create,
   update,
+  updateStatus,
   remove,
 };

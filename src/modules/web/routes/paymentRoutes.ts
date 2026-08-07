@@ -8,7 +8,9 @@ import {
   verifyPaymentValidation,
 } from "../validation/paymentValidation";
 import validate from "../../../middleware/validate";
-import { authenticate } from "../../../middleware/authMiddleware";
+
+import { authenticate, authorize } from "../../../middleware/authMiddleware";
+import { ROLES } from "../../../constants";
 
 const router = Router();
 
@@ -76,6 +78,15 @@ router.get(
   transactionNoParam,
   validate,
   ctrl.getStatus as any
+);
+
+router.patch(
+  "/:id/status",
+  authenticate as any,
+  authorize(ROLES.ADMIN) as any,
+  uuidParam,
+  validate,
+  ctrl.updateStatus as any
 );
 
 export default router;

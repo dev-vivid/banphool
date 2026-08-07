@@ -112,6 +112,41 @@ export const webhook = async (
   }
 };
 
+
+export const updateStatus = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const data = await paymentUseCase.updateStatus(
+      req.params.id,
+      req.body.isActive,
+      req
+    );
+
+    return response.success(
+      res,
+      req,
+      data,
+      req.body.isActive
+        ? "Volunteer activated successfully"
+        : "Volunteer deactivated successfully"
+    );
+  } catch (err: any) {
+    if (err.statusCode) {
+      return response.error(
+        res,
+        req,
+        err.message,
+        err.statusCode
+      );
+    }
+
+    next(err);
+  }
+};
+
 export default {
   getAll,
   getById,
@@ -119,4 +154,5 @@ export default {
   getStatus,
   verify,
   webhook,
+  updateStatus
 };

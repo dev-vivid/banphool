@@ -94,10 +94,46 @@ export const remove = async (
   }
 };
 
+
+export const updateStatus = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const data = await eventsUseCase.updateStatus(
+      req.params.id,
+      req.body.isActive,
+      req
+    );
+
+    return response.success(
+      res,
+      req,
+      data,
+      req.body.isActive
+        ? "Volunteer activated successfully"
+        : "Volunteer deactivated successfully"
+    );
+  } catch (err: any) {
+    if (err.statusCode) {
+      return response.error(
+        res,
+        req,
+        err.message,
+        err.statusCode
+      );
+    }
+
+    next(err);
+  }
+};
+
 export default {
   getAll,
   getById,
   create,
   update,
   remove,
+  updateStatus
 };

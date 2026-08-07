@@ -48,10 +48,14 @@ export const findAll = async ({
     }),
   ]);
 
-  const baseUrl = process.env.BASE_URL || "http://localhost:3000";
+  const baseUrl =
+    process.env.BASE_URL || "http://localhost:3000";
 
   const list = rows.map((item) => ({
     ...item,
+
+    status: item.isActive ? "Active" : "Inactive",
+
     document: item.document
       ? `${baseUrl}/uploads/videos/${item.document}`
       : null,
@@ -74,10 +78,14 @@ export const findById = async (id: string) => {
     return null;
   }
 
-  const baseUrl = process.env.BASE_URL || "http://localhost:3000";
+  const baseUrl =
+    process.env.BASE_URL || "http://localhost:3000";
 
   return {
     ...videos,
+
+    status: videos.isActive ? "Active" : "Inactive",
+
     document: videos.document
       ? `${baseUrl}/uploads/videos/${videos.document}`
       : null,
@@ -120,10 +128,25 @@ export const remove = async (id: string) => {
   });
 };
 
+export const updateStatus = async (
+  id: string,
+  isActive: boolean
+) => {
+  return prisma.volunteer.update({
+    where: {
+      id,
+    },
+    data: {
+      isActive,
+    },
+  });
+};
+
 export default {
   findAll,
   findById,
   create,
   update,
   remove,
+  updateStatus
 };

@@ -63,5 +63,14 @@ router.delete(
   ctrl.remove as any
 );
 
+router.patch(
+  "/:id/status",
+  authenticate as any,
+  authorize(ROLES.ADMIN) as any,
+  uuidParam,
+  validate,
+  ctrl.updateStatus as any
+);
+
 export default router;
 export { router };

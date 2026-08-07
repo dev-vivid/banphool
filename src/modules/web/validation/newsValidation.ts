@@ -52,9 +52,20 @@ export const updateNewsValidation = [
   ...newsBody,
 ];
 
+export const updateVolunteerStatusValidation = [
+  ...uuidParam,
+
+  body("isActive")
+    .notEmpty()
+    .withMessage("isActive is required")
+    .isBoolean()
+    .withMessage("isActive must be true or false"),
+];
+
 export default {
   uuidParam,
   paginationQuery,
   createNewsValidation,
   updateNewsValidation,
+  updateVolunteerStatusValidation
 };

@@ -63,19 +63,34 @@ export const findAll = async ({
     }),
   ]);
 
+  const list = rows.map((item) => ({
+    ...item,
+    status: item.isActive ? "Active" : "Inactive",
+  }));
+
   return {
-    rows,
+    rows: list,
     total,
   };
 };
 
 export const findById = async (id: string) => {
-  return prisma.payment.findUnique({
+  const payment = await prisma.payment.findUnique({
     where: {
       id,
     },
   });
+
+  if (!payment) {
+    return null;
+  }
+
+  return {
+    ...payment,
+    status: payment.isActive ? "Active" : "Inactive",
+  };
 };
+
 
 export const findByTransactionNo = async (transactionNo: string) => {
   return prisma.payment.findUnique({
@@ -319,6 +334,21 @@ export const handleWebhook = async (
   }
 };
 
+export const updateAccountStatus = async (
+  id: string,
+  isActive: boolean
+) => {
+  return prisma.volunteer.update({
+    where: {
+      id,
+    },
+    data: {
+      isActive,
+    },
+  });
+};
+
+
 export default {
   findAll,
   findById,
@@ -328,4 +358,5 @@ export default {
  updateStatus,
  verifyPayment,
  handleWebhook,
+ updateAccountStatus
 };

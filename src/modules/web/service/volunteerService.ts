@@ -8,6 +8,14 @@ interface VolunteerFindAllOptions {
   limit: number;
 }
 
+interface VolunteerFindAllOptions {
+  search?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+  skip: number;
+  limit: number;
+}
+
 export const findAll = async ({
   search,
   sortBy = "createdAt",
@@ -60,6 +68,7 @@ export const findAll = async ({
     prisma.volunteer.count({
       where,
     }),
+
     prisma.volunteer.findMany({
       where,
       orderBy,
@@ -68,19 +77,34 @@ export const findAll = async ({
     }),
   ]);
 
+  const formattedRows = rows.map((volunteer) => ({
+    ...volunteer,
+    status: volunteer.isActive ? "Active" : "Inactive",
+  }));
+
   return {
-    rows,
+    rows: formattedRows,
     total,
   };
 };
 
 export const findById = async (id: string) => {
-  return prisma.volunteer.findUnique({
+  const volunteer = await prisma.volunteer.findUnique({
     where: {
       id,
     },
   });
+
+  if (!volunteer) {
+    return null;
+  }
+
+  return {
+    ...volunteer,
+    status: volunteer.isActive ? "Active" : "Inactive",
+  };
 };
+
 
 export const create = async (data: any) => {
   return prisma.volunteer.create({
@@ -121,10 +145,26 @@ export const remove = async (id: string) => {
   });
 };
 
+
+export const updateStatus = async (
+  id: string,
+  isActive: boolean
+) => {
+  return prisma.volunteer.update({
+    where: {
+      id,
+    },
+    data: {
+      isActive,
+    },
+  });
+};
+
 export default {
   findAll,
   findById,
   create,
   update,
   remove,
+  updateStatus
 };

@@ -67,6 +67,7 @@ export const findAll = async ({
     prisma.beneficiaryApplication.count({
       where,
     }),
+
     prisma.beneficiaryApplication.findMany({
       where,
       orderBy,
@@ -75,9 +76,14 @@ export const findAll = async ({
     }),
   ]);
 
+  const list = rows.map((item) => ({
+    ...mapFileUrls(item),
+    status: item.isActive ? "Active" : "Inactive",
+  }));
+
   return {
     total,
-    rows: rows.map(mapFileUrls),
+    rows: list,
   };
 };
 
@@ -88,8 +94,16 @@ export const findById = async (id: string) => {
     },
   });
 
-  return data ? mapFileUrls(data) : null;
+  if (!data) {
+    return null;
+  }
+
+  return {
+    ...mapFileUrls(data),
+    status: data.isActive ? "Active" : "Inactive",
+  };
 };
+
 
 export const create = async (data: any) => {
   return prisma.beneficiaryApplication.create({
@@ -142,10 +156,25 @@ export const remove = async (id: string) => {
   });
 };
 
+export const updateStatus = async (
+  id: string,
+  isActive: boolean
+) => {
+  return prisma.volunteer.update({
+    where: {
+      id,
+    },
+    data: {
+      isActive,
+    },
+  });
+};
+
 export default {
   findAll,
   findById,
   create,
   update,
   remove,
+  updateStatus
 };

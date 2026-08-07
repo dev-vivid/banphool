@@ -86,9 +86,20 @@ export const updateContactUsValidation = [
   ...contactUsBody,
 ];
 
+export const updateVolunteerStatusValidation = [
+  ...uuidParam,
+
+  body("isActive")
+    .notEmpty()
+    .withMessage("isActive is required")
+    .isBoolean()
+    .withMessage("isActive must be true or false"),
+];
+
 export default {
   uuidParam,
   paginationQuery,
   createContactUsValidation,
   updateContactUsValidation,
+  updateVolunteerStatusValidation
 };

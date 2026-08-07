@@ -64,18 +64,32 @@ export const findAll = async ({
     }),
   ]);
 
+  const list = rows.map((item) => ({
+    ...item,
+    status: item.isActive ? "Active" : "Inactive",
+  }));
+
   return {
-    rows,
+    rows: list,
     total,
   };
 };
 
 export const findById = async (id: string) => {
-  return prisma.contactUs.findUnique({
+  const contact = await prisma.contactUs.findUnique({
     where: {
       id,
     },
   });
+
+  if (!contact) {
+    return null;
+  }
+
+  return {
+    ...contact,
+    status: contact.isActive ? "Active" : "Inactive",
+  };
 };
 
 export const create = async (data: any) => {
@@ -140,11 +154,26 @@ export const remove = async (id: string) => {
   });
 };
 
+export const updateStatus = async (
+  id: string,
+  isActive: boolean
+) => {
+  return prisma.volunteer.update({
+    where: {
+      id,
+    },
+    data: {
+      isActive,
+    },
+  });
+};
+
 export default {
   findAll,
- findById,
+  findById,
   create,
   update,
-  updateEmailStatus,
   remove,
+  updateStatus,
+  updateEmailStatus
 };
